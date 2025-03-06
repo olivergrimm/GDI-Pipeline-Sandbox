@@ -26,9 +26,10 @@ jobs:
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
+          pip install geopandas
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run FileGDBToSde
+      - name: Run FilterAndExportToGPKG
         run: |
           source venv/bin/activate
           python ./P1.publish/FilterAndExportToGPKG.py
