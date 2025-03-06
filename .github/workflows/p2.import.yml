@@ -39,6 +39,12 @@ jobs:
       - name: Run Schemaimport
         run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.agi.amtliche_vermessung.gpkg --createBasketCol --defaultSrsCode 2056 --log ./_logs/01_schemaimport_nupl.log --schemaimport --models SO_ARP_Nutzungsplanung_Publikation_20201005 
 
+      - name: Upload GeoPackage as Artifact (Initial)
+        uses: actions/upload-artifact@v4
+        with:
+          name: geopackage
+          path: ./_data/av_current.xtf
+
       - name: Run Dataimport
         run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.agi.amtliche_vermessung.gpkg --defaultSrsCode 2056 --log ./_logs/01_dataimport_nupl.log --replace ./_data/av_current.xtf
 
