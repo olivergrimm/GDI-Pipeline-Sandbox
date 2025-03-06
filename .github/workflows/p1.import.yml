@@ -53,22 +53,6 @@ jobs:
           name: geopackage
           path: ./_data/so.arp.nutzungsplanung_kommunal.gpkg
 
-  download-artifact:
-    runs-on: ubuntu-latest
-    needs: run-script  # Warte auf den vorherigen Job
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Download GeoPackage Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: geopackage
-          path: ./_data
-
-      - name: Verify Download
-        run: ls -l ./_data  
-
   upload-final-gpkg:
     runs-on: ubuntu-latest
     needs: download-artifact  

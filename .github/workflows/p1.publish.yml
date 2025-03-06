@@ -33,6 +33,12 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Download GeoPackage as Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: geopackage
+          path: ./_data/so.arp.nutzungsplanung_kommunal.gpkg
+
       - name: Run Schemaimport
         run: java -jar ./_Runners/ili2fgdb/ili2fgdb-5.2.2.jar --dbfile .\_data\${{ inputs.xtf_filename }}.gdb --defaultSrsCode 2056 --log ./logs/01_schemaimport_${{ inputs.xtf_filename }}.gdb --schemaimport .\_modelrepo\DM.01-AV-CH_LV95_24d_ili1.ili
 
@@ -50,4 +56,18 @@ jobs:
           name: logs
           path: logs/
 
+  download-artifact:
+    runs-on: ubuntu-latest
+    needs: run-script  # Warte auf den vorherigen Job
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
+      - name: Download GeoPackage Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: geopackage
+          path: ./_data
+
+      - name: Verify Download
+        run: ls -l ./_data  
