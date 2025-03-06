@@ -10,10 +10,10 @@ on:
       - main
   workflow_dispatch:
       inputs:
-      xtf_filename:
-        description: "Input XTF-Datei"
-        required: true
-        type: string
+        xtf_filename:
+          description: "Input XTF-Datei"
+          required: true
+          type: string
 
 jobs:
   run-script:
