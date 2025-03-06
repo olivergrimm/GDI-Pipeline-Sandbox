@@ -1,0 +1,61 @@
+# P2: Amtliche Vermessung Import
+name: Run P2.import
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Ermöglicht manuelles Auslösen des Workflows
+      inputs:
+      xtf_filename:
+        description: "Input XTF-Datei"
+        required: true
+        type: string 
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Run Schemaimport
+        run: java -jar ./_Runners/ili2fgdb/ili2fgdb-5.2.2.jar --dbfile .\_data\${{ inputs.xtf_filename }}.gdb --defaultSrsCode 2056 --log ./logs/01_schemaimport_{{ inputs.xtf_filename }}.gdb --schemaimport .\_modelrepo\DM.01-AV-CH_LV95_24d_ili1.ili
+
+      - name: Run Dataimport
+        run: java -jar ./_Runners/ili2fgdb/ili2fgdb-5.2.2.jar --dbfile .\_data\${{ inputs.xtf_filename }}.gdb --defaultSrsCode 2056 --log ./logs/01_dataimport_{{ inputs.xtf_filename }}.gdb --import .\_data\{{ inputs.xtf_filename }}
+
+      - name: Run FileGDBToSde
+        run: |
+          source venv/bin/activate
+          python FileGDBToSde.py ${{ inputs.xtf_filename }}.gdb
+
+      - name: Upload Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: logs/
+
+

@@ -1,0 +1,56 @@
+# P3: kein INTERLIS / reines Geodata-Processing
+name: Run P3
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Ermöglicht manuelles Auslösen des Workflows
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run fcToFileGDB
+        run: |
+          source venv/bin/activate
+          python fcToFileGDB.py
+
+      - name: Run Join
+        run: |
+          source venv/bin/activate
+          python Join.py
+
+      - name: Upload mit FTP-Deploy-Action
+                uses: SamKirkland/FTP-Deploy-Action@v4
+                with:
+                  server: ${{ secrets.FTP_HOST }}
+                  username: ${{ secrets.FTP_USER }}
+                  password: ${{ secrets.FTP_PASSWORD }}
+                  local-dir: "./build/"  # Lokales Verzeichnis, das hochgeladen wird
+                  server-dir: "/public_html/"  # Zielverzeichnis auf dem Server
+
+      - name: Upload Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: logs/

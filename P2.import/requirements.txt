@@ -1,0 +1,6 @@
+gdal>=3.4
+pandas>=1.5
+numpy>=1.21
+shapely>=2.0
+fiona>=1.9
+geopandas>=0.12

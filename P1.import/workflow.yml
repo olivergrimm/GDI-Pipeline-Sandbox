@@ -1,0 +1,59 @@
+# P1: OEREB Import Nutzungsplanung
+name: Run P1.import.NuPl
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+      inputs:
+      xtf_filename:
+        description: "Input XTF-Datei"
+        required: true
+        type: string
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Run Schemaimport
+        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile .\_data\so.arp.nutzungsplanung_kommunal.gdb --defaultSrsCode 2056 --log ./logs/01_schemaimport_nupl.log --schemaimport --models SO_ARP_Nutzungsplanung_Publikation_20201005 
+
+      - name: Run DeleteBasket
+        run: java -jar ./_Runners/ili2fgdb/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile .\_data\so.arp.nutzungsplanung_kommunal.gdb --log ./logs/01_dataimport_nupl.log --delete --dataset {{ inputs.xtf_filename }} .\_data\{{ inputs.xtf_filename }}
+
+      - name: Run Dataimport
+        run: java -jar ./_Runners/ili2fgdb/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile .\_data\so.arp.nutzungsplanung_kommunal.gdb --defaultSrsCode 2056 --dataset {{ inputs.xtf_filename }}--log ./logs/01_dataimport_nupl.log --import .\_data\{{ inputs.xtf_filename }}
+
+      - name: Upload Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: logs/
+
+
