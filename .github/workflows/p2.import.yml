@@ -1,4 +1,4 @@
-# P1: OEREB Publishing
+# P2: AV Import
 name: Run P2.import
 
 on:
@@ -30,15 +30,13 @@ jobs:
           pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run SdeToGeopackage
+      - name: Run GetFromGeopilotSTAC
         run: |
           source venv/bin/activate
-          python SdeToGeopackage.py
+          python STACDownload.py
 
       - name: Upload Logs
         uses: actions/upload-artifact@v4
         with:
           name: logs
           path: logs/
-
-
