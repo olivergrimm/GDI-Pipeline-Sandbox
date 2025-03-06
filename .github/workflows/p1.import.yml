@@ -35,14 +35,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Download GeoPackage as Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: geopackage
-          path: ./_data/so.arp.nutzungsplanung_kommunal.gpkg
-
       - name: Run Schemaimport
-        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --createBasketCol --defaultSrsCode 2056 --log ./_logs/#01_schemaimport_nupl.log --schemaimport --models SO_ARP_Nutzungsplanung_Publikation_20201005 
+        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --createBasketCol --defaultSrsCode 2056 --log ./_logs/01_schemaimport_nupl.log --schemaimport --models SO_ARP_Nutzungsplanung_Publikation_20201005 
 
       - name: Run Dataimport
         run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --defaultSrsCode 2056 --dataset ${{ inputs.xtf_filename }} --log ./_logs/01_dataimport_nupl.log --replace ./_data/${{ inputs.xtf_filename }}
@@ -53,7 +47,7 @@ jobs:
           name: logs
           path: _logs/
 
-      - name: Upload GeoPackage as Artifact
+      - name: Upload GeoPackage as Artifact (Initial)
         uses: actions/upload-artifact@v4
         with:
           name: geopackage
@@ -73,4 +67,26 @@ jobs:
           path: ./_data
 
       - name: Verify Download
-        run: ls -l ./_data  # Überprüft, ob die Datei vorhanden ist
+        run: ls -l ./_data  
+
+  upload-final-gpkg:
+    runs-on: ubuntu-latest
+    needs: download-artifact  
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download GeoPackage Artifact (Wiederverwendung)
+        uses: actions/download-artifact@v4
+        with:
+          name: geopackage
+          path: ./_data
+
+      - name: Verify Processed GPKG
+        run: ls -l ./_data
+
+      - name: Upload Processed GeoPackage
+        uses: actions/upload-artifact@v4
+        with:
+          name: processed-geopackage
+          path: ./_data/so.arp.nutzungsplanung_kommunal.gpkg
