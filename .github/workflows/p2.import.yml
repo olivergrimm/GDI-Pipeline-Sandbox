@@ -1,5 +1,5 @@
 # P1: OEREB Publishing
-name: Run P1.publish
+name: Run P2.import
 
 on:
   #push:
