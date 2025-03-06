@@ -1,5 +1,5 @@
 import geopandas as gpd
-path = r'./data/' 
+path = r'./_data/' 
 filename_gpkg = 'ch.so.arp.nutzungsplanung.kommunal.gpkg' 
 grundnutzung = gpd.read_file(path+filename_gpkg, layer='grundnutzung')
 grundnutzung_wald_lwz=grundnutzung[grundnutzung['typ_bezeichnung'].isin(["Landwirtschaftszone", "Wald"])]
