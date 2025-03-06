@@ -36,13 +36,13 @@ jobs:
           distribution: 'temurin'
 
       - name: Download GeoPackage as Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/download-artifact@v4
         with:
           name: geopackage
           path: ./_data/so.arp.nutzungsplanung_kommunal.gpkg
 
-      #- name: Run Schemaimport
-      #  run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --createBasketCol --defaultSrsCode 2056 --log ./_logs/#01_schemaimport_nupl.log --schemaimport --models SO_ARP_Nutzungsplanung_Publikation_20201005 
+      - name: Run Schemaimport
+        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --createBasketCol --defaultSrsCode 2056 --log ./_logs/#01_schemaimport_nupl.log --schemaimport --models SO_ARP_Nutzungsplanung_Publikation_20201005 
 
       - name: Run Dataimport
         run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --defaultSrsCode 2056 --dataset ${{ inputs.xtf_filename }} --log ./_logs/01_dataimport_nupl.log --replace ./_data/${{ inputs.xtf_filename }}
