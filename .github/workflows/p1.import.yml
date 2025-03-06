@@ -2,12 +2,6 @@
 name: Run P1.import.NuPl
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
       inputs:
         xtf_filename:

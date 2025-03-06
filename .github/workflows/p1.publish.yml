@@ -2,18 +2,11 @@
 name: Run P2.import
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch: # Ermöglicht manuelles Auslösen des Workflows
-      inputs:
-      xtf_filename:
-        description: "Input XTF-Datei"
-        required: true
-        type: string 
+  workflow_run:
+    workflows: ["Run P1.import.NuPl"]  # Name von Workflow A
+    types:
+      - completed
+
 
 jobs:
   run-script:

@@ -2,12 +2,6 @@
 name: Run P3
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch: # Ermöglicht manuelles Auslösen des Workflows
 
 jobs:
@@ -41,13 +35,13 @@ jobs:
           python Join.py
 
       - name: Upload mit FTP-Deploy-Action
-                uses: SamKirkland/FTP-Deploy-Action@v4
-                with:
-                  server: ${{ secrets.FTP_HOST }}
-                  username: ${{ secrets.FTP_USER }}
-                  password: ${{ secrets.FTP_PASSWORD }}
-                  local-dir: "./build/"  # Lokales Verzeichnis, das hochgeladen wird
-                  server-dir: "/public_html/"  # Zielverzeichnis auf dem Server
+          uses: SamKirkland/FTP-Deploy-Action@v4
+            with:
+            server: ${{ secrets.FTP_HOST }}
+            username: ${{ secrets.FTP_USER }}
+            password: ${{ secrets.FTP_PASSWORD }}
+            local-dir: "./build/"  
+            server-dir: "/public_html/"  
 
       - name: Upload Logs
         uses: actions/upload-artifact@v4
