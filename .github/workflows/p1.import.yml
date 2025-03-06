@@ -51,7 +51,7 @@ jobs:
         run: java -jar ./_Runners/ili2fgdb/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile .\_data\so.arp.nutzungsplanung_kommunal.gdb --defaultSrsCode 2056 --dataset {{ inputs.xtf_filename }}--log ./logs/01_dataimport_nupl.log --import .\_data\{{ inputs.xtf_filename }}
 
       - name: Upload Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: logs
           path: logs/
