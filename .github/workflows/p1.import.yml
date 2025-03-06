@@ -42,13 +42,13 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Schemaimport
-        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gdb --defaultSrsCode 2056 --log ./_logs/01_schemaimport_nupl.log --schemaimport --models SO_ARP_Nutzungsplanung_Publikation_20201005 
+        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --defaultSrsCode 2056 --log ./_logs/01_schemaimport_nupl.log --schemaimport --models SO_ARP_Nutzungsplanung_Publikation_20201005 
 
       - name: Run DeleteBasket
-        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gdb --log ./_logs/01_dataimport_nupl.log --delete --dataset ${{ inputs.xtf_filename }}
+        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --log ./_logs/01_dataimport_nupl.log --delete --dataset ${{ inputs.xtf_filename }}
 
       - name: Run Dataimport
-        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gdb --defaultSrsCode 2056 --dataset ${{ inputs.xtf_filename }} --log ./_logs/01_dataimport_nupl.log --import ./_data/2576.ch.so.arp.nutzungsplanung.kommunal.xtf
+        run: java -jar ./_Runners/ili2gpkg/ili2gpkg-5.2.2-SNAPSHOT.jar --dbfile ./_data/so.arp.nutzungsplanung_kommunal.gpkg --defaultSrsCode 2056 --dataset ${{ inputs.xtf_filename }} --log ./_logs/01_dataimport_nupl.log --import ./_data/2576.ch.so.arp.nutzungsplanung.kommunal.xtf
 
       - name: Upload Logs
         uses: actions/upload-artifact@v4
