@@ -1,12 +1,11 @@
-# P2: Amtliche Vermessung Import
-name: Run P2.import
+# P1: OEREB Publishing Nutzungsplanung
+name: Run P1.publish
 
 on:
   workflow_run:
     workflows: ["Run P1.import.NuPl"]  # Name von Workflow A
     types:
       - completed
-
 
 jobs:
   run-script:
@@ -35,10 +34,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Schemaimport
-        run: java -jar ./_Runners/ili2fgdb/ili2fgdb-5.2.2.jar --dbfile .\_data\${{ inputs.xtf_filename }}.gdb --defaultSrsCode 2056 --log ./logs/01_schemaimport_{{ inputs.xtf_filename }}.gdb --schemaimport .\_modelrepo\DM.01-AV-CH_LV95_24d_ili1.ili
+        run: java -jar ./_Runners/ili2fgdb/ili2fgdb-5.2.2.jar --dbfile .\_data\${{ inputs.xtf_filename }}.gdb --defaultSrsCode 2056 --log ./logs/01_schemaimport_${{ inputs.xtf_filename }}.gdb --schemaimport .\_modelrepo\DM.01-AV-CH_LV95_24d_ili1.ili
 
       - name: Run Dataimport
-        run: java -jar ./_Runners/ili2fgdb/ili2fgdb-5.2.2.jar --dbfile .\_data\${{ inputs.xtf_filename }}.gdb --defaultSrsCode 2056 --log ./logs/01_dataimport_{{ inputs.xtf_filename }}.gdb --import .\_data\{{ inputs.xtf_filename }}
+        run: java -jar ./_Runners/ili2fgdb/ili2fgdb-5.2.2.jar --dbfile .\_data\${{ inputs.xtf_filename }}.gdb --defaultSrsCode 2056 --log ./logs/01_dataimport_${{ inputs.xtf_filename }}.gdb --import .\_data\${{ inputs.xtf_filename }}
 
       - name: Run FileGDBToSde
         run: |
